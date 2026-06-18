@@ -48,11 +48,24 @@ const JoinCreateChat = () => {
       }
     } catch (error) {
       if (error.response?.data) {
-        // Display specific field errors if they exist (e.g., email already exists)
+        // Display specific field errors if they exist
         const errors = error.response.data;
-        if (errors.email) toast.error(`Email: ${errors.email[0]}`);
-        else if (errors.username) toast.error(`Username: ${errors.username[0]}`);
-        else toast.error(errors.detail || "Authentication failed");
+        if (errors.email) {
+          const emailError = Array.isArray(errors.email) ? errors.email[0] : errors.email;
+          toast.error(`Email: ${emailError}`);
+        } else if (errors.username) {
+          const usernameError = Array.isArray(errors.username) ? errors.username[0] : errors.username;
+          toast.error(`Username: ${usernameError}`);
+        } else if (errors.password) {
+          const passwordError = Array.isArray(errors.password) ? errors.password[0] : errors.password;
+          toast.error(`Password: ${passwordError}`);
+        } else if (errors.detail) {
+          toast.error(errors.detail);
+        } else {
+          // Show first available error
+          const firstError = Object.values(errors).flat()[0];
+          toast.error(firstError || "Registration failed");
+        }
       } else {
         toast.error("Network error");
       }
