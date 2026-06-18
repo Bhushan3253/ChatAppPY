@@ -146,10 +146,25 @@ if DEBUG:
 cors_origins.extend([
     'https://chat-app-py-ivory.vercel.app',
     'https://chat-app-e2yk729si-bhushans-projects-48426fb6.vercel.app',
+    'https://chat-app-e2vk729si-bhushans-projects-48426fb6.vercel.app',
 ])
 
 # Remove duplicates
 CORS_ALLOWED_ORIGINS = list(set(cors_origins))
+
+# Allow all Vercel preview deployments via regex
+import re
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r'https://.*\.vercel\.app$',
+]
+
+# CORS Headers configuration
+CORS_ALLOW_CREDENTIALS = True
+CORS_EXPOSE_HEADERS = [
+    'Content-Type',
+    'X-CSRFToken',
+    'Authorization',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
