@@ -123,7 +123,33 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 AUTH_USER_MODEL = 'accounts.User'
 
 CORS_ALLOW_ALL_ORIGINS = os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'False').lower() in {'1', 'true', 'yes', 'on'}
-CORS_ALLOWED_ORIGINS = [origin.strip() for origin in os.environ.get('CORS_ALLOWED_ORIGINS', '').split(',') if origin.strip()]
+
+# Build CORS_ALLOWED_ORIGINS
+cors_origins = []
+
+# Add from environment variable
+env_origins = os.environ.get('CORS_ALLOWED_ORIGINS', '')
+if env_origins:
+    cors_origins.extend([origin.strip() for origin in env_origins.split(',') if origin.strip()])
+
+# Add development origins
+if DEBUG:
+    cors_origins.extend([
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'http://localhost:8000',
+        'http://127.0.0.1:5173',
+        'http://127.0.0.1:3000',
+    ])
+
+# Add production Vercel frontend URLs
+cors_origins.extend([
+    'https://chat-app-py-ivory.vercel.app',
+    'https://chat-app-e2yk729si-bhushans-projects-48426fb6.vercel.app',
+])
+
+# Remove duplicates
+CORS_ALLOWED_ORIGINS = list(set(cors_origins))
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
