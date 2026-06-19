@@ -47,6 +47,8 @@ const JoinCreateChat = () => {
         setIsLogin(true);
       }
     } catch (error) {
+      console.error('Registration error (raw):', error);
+      console.error('Registration response data:', error.response?.data);
       if (error.response?.data) {
         // Display specific field errors if they exist
         const errors = error.response.data;
