@@ -9,7 +9,20 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-dummy-key-for-dev')
 
 DEBUG = os.environ.get('DEBUG', 'True').lower() in {'1', 'true', 'yes', 'on'}
 
-ALLOWED_HOSTS = [host.strip() for host in os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,chatapppy.onrender.com').split(',') if host.strip()]
+raw_allowed_hosts = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,chatapppy.onrender.com')
+
+def _clean_host(h: str) -> str | None:
+    h = h.strip()
+    if not h:
+        return None
+    parsed = urlparse(h)
+    # If a scheme was provided like https://example.com, use the hostname
+    if parsed.hostname:
+        return parsed.hostname
+    # otherwise trim any trailing slashes
+    return h.rstrip('/')
+
+ALLOWED_HOSTS = [host for host in (_clean_host(h) for h in raw_allowed_hosts.split(',')) if host]
 
 
 def database_config_from_url(database_url):
