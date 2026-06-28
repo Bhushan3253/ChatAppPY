@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 
-export const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+export const baseURL = import.meta.env.VITE_API_URL || "https://chatapppybackend.azurewebsites.net";
 
 export const websocketBaseURL = import.meta.env.VITE_WS_URL || baseURL.replace(/^http/, 'ws');
 
