@@ -11,6 +11,16 @@ DEBUG = os.environ.get('DEBUG', 'True').lower() in {'1', 'true', 'yes', 'on'}
 
 raw_allowed_hosts = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,chatapppy.onrender.com')
 
+REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379")
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [REDIS_URL],
+        },
+    },
+}
 def _clean_host(h: str) -> str | None:
     h = h.strip()
     if not h:
@@ -22,8 +32,10 @@ def _clean_host(h: str) -> str | None:
     # otherwise trim any trailing slashes
     return h.rstrip('/')
 
-ALLOWED_HOSTS = [host for host in (_clean_host(h) for h in raw_allowed_hosts.split(',')) if host]
-
+ALLOWED_HOSTS = [
+    host for host in (_clean_host(h) for h in raw_allowed_hosts.split(","))
+    if host
+] + [".ondigitalocean.app"]
 
 def database_config_from_url(database_url):
     parsed = urlparse(database_url)
@@ -52,7 +64,10 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework_simplejwt',
     'drf_yasg',
+     "channels",
 ]
+
+ASGI_APPLICATION = "backend.asgi.application"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
