@@ -45,13 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'chat',
+    'accounts',
     'rest_framework',
     'corsheaders',
     'channels',
     'rest_framework_simplejwt',
     'drf_yasg',
-    'chat',
-    'accounts',
 ]
 
 MIDDLEWARE = [
